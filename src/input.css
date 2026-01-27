@@ -1,0 +1,59 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/container-queries";
+
+@theme {
+  --color-primary: #256af4;
+  --color-background-light: #f5f6f8;
+  --color-background-dark: #0a0a0c;
+  --color-surface-dark: #16161a;
+  --color-surface-light-dark: #1e1e24;
+  --color-border-dark: #2a2a2e;
+
+  --font-display: "Lexend", sans-serif;
+
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem; 
+  --radius-2xl: 1rem;
+}
+
+/* 
+Enable class-based dark mode 
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+    body {
+        font-family: "Lexend", sans-serif;
+    }
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.active-nav {
+    background-color: rgba(37, 106, 244, 0.15);
+    color: #256af4;
+}
+
+.dark .active-nav {
+  background-color: rgba(37, 106, 244, 0.2);
+  color: #60a5fa;
+}
+
+.glow-button {
+  box-shadow: 0 0 20px rgba(37, 106, 244, 0.4);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #2a2a2e;
+  border-radius: 10px;
+}
+

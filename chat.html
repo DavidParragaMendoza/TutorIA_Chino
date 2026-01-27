@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Tutor IA - Simplified Chat</title>
+    <link href="./src/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
+    <style>
+        #menu-toggle:checked ~ aside {
+            transform: translateX(0);
+        }
+        #context-toggle:checked ~ .context-panel {
+            display: flex;
+        }
+        #context-toggle:checked ~ .chat-container {
+            margin-right: 320px;
+        }
+        @media (max-width: 1280px) {
+            #context-toggle:checked ~ .chat-container {
+                margin-right: 0;
+            }
+            .context-panel {
+                position: fixed;
+                right: 0;
+                top: 64px;
+                bottom: 0;
+                z-index: 40;
+                width: 100%;
+                max-width: 320px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-white font-display transition-colors duration-200 overflow-hidden">
+    <input class="hidden peer" id="menu-toggle" type="checkbox"/>
+    <aside class="fixed inset-y-0 left-0 z-50 w-64 lg:w-20 bg-surface-dark border-r border-border-dark flex flex-col items-center py-6 transition-transform duration-300 -translate-x-full lg:translate-x-0">
+        <div class="flex flex-col gap-8 w-full items-center">
+            <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20 mb-4">
+                <span class="material-symbols-outlined text-2xl">school</span>
+            </div>
+            <nav class="flex flex-col gap-4 w-full px-3">
+                <a class="flex items-center lg:justify-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group" href="./saludos.html">
+                    <span class="material-symbols-outlined">home</span>
+                    <span class="lg:hidden font-medium">Home</span>
+                </a>
+                <!-- <a class="flex items-center lg:justify-center gap-3 p-3 rounded-xl bg-primary/10 text-primary transition-all group" href="#">
+                    <span class="material-symbols-outlined">forum</span>
+                    <span class="lg:hidden font-medium">Chat Práctica</span>
+                </a>
+                <a class="flex items-center lg:justify-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group" href="#">
+                    <span class="material-symbols-outlined">book_2</span>
+                    <span class="lg:hidden font-medium">Lecciones</span>
+                </a>
+                <a class="flex items-center lg:justify-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition-all group" href="#">
+                    <span class="material-symbols-outlined">analytics</span>
+                    <span class="lg:hidden font-medium">Progreso</span>
+                </a> -->
+            </nav>
+        </div>
+        <div class="mt-auto flex flex-col gap-4 w-full px-3 pt-4 border-t border-border-dark">
+            <a class="flex items-center lg:justify-center gap-3 p-3 rounded-xl text-slate-400 hover:bg-white/5 transition-all" href="#">
+                <span class="material-symbols-outlined">help</span>
+                <span class="lg:hidden font-medium">Ayuda</span>
+            </a>
+            <div class="flex items-center lg:justify-center p-2">
+                <div class="w-10 h-10 rounded-full bg-slate-800 bg-cover bg-center border border-border-dark" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCn62-blhaqXRfDy4UffrVUbzRwZ3Gv090oLBHBUK2r7ZNVXVOLaqNs8wwizxprNHNFTiEE46HVYOlnCUsNgLkZoAEGgtLLGoi-DRCc6JX0oO7lryMlb4RKzhgXVMjNaENOFyMOqFYr74XJnVlaeb0FF_0MA0f_NvsUG8-Wj-vh2tr4yPP5DrZ547jtos2epBCZ5nXqLFFsKJQUWTcJraBLYplDOqEZVtnevvbqQHEMddRGI5ZDuNR0S7WAbco7izrB5h_CJcLVjNI')"></div>
+            </div>
+        </div>
+    </aside>
+
+    <label class="fixed inset-0 bg-black/50 z-40 lg:hidden hidden peer-checked:block" for="menu-toggle"></label>
+    <main class="lg:ml-20 flex-1 flex flex-col h-screen relative">
+        <header class="h-16 px-4 lg:px-6 border-b border-border-dark flex items-center justify-between bg-surface-dark/50 backdrop-blur-md sticky top-0 z-30">
+            <div class="flex items-center gap-4">
+                <a href="saludos.html" class="p-2 -ml-2 text-slate-400 hover:text-white lg:hidden cursor-pointer">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </a>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-2xl">smart_toy</span>
+                    </div>
+                    <div>
+                        <h2 class="text-sm lg:text-base font-bold truncate max-w-150px lg:max-w-none">Práctica: Saludos</h2>
+                        <p class="text-[10px] text-green-400 flex items-center gap-1 font-medium">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                            IA Online
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-1">
+                <button class="p-2 text-slate-400 hover:text-white transition-colors hidden sm:block">
+                    <span class="material-symbols-outlined">refresh</span>
+                </button>
+                <label class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-light-dark border border-border-dark text-slate-300 hover:text-white hover:border-primary/50 cursor-pointer transition-all" for="context-toggle">
+                    <span class="material-symbols-outlined text-xl">lightbulb</span>
+                    <span class="text-xs font-semibold hidden sm:inline">Contexto</span>
+                </label>
+                <button class="p-2 text-slate-400 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">more_vert</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="flex-1 flex overflow-hidden relative">
+            <input class="hidden" id="context-toggle" type="checkbox"/>
+
+            <div class="chat-container flex-1 flex flex-col transition-all duration-300 w-full">
+                
+                <div id="chatContainer" class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-8 custom-scrollbar">
+                    <div class="flex gap-4 max-w-2xl">
+                        <!-- <div class="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-primary text-lg">smart_toy</span>
+                        </div> -->
+                        <!-- <div class="bg-surface-dark border border-border-dark p-4 rounded-2xl rounded-tl-none shadow-sm">
+                            <p class="text-slate-200 text-sm">¡Hola! Soy tu Tutor de Mandarín. Escribe "comenzar" para iniciar.</p>
+                        </div> -->
+                    </div>
+                </div>
+
+                <div class="p-4 lg:p-6 bg-background-dark/80 backdrop-blur-sm">
+                    <div class="max-w-4xl mx-auto flex items-center gap-2 lg:gap-3 bg-surface-dark border border-border-dark rounded-2xl p-1.5 lg:p-2 shadow-2xl">
+                        
+                        <input id="userInput" class="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder-slate-500 py-2 lg:py-3 text-sm lg:text-base" placeholder="Escribe tu respuesta" type="text"/>
+                        
+                        <button id="sendBtn" class="w-10 h-10 lg:w-12 lg:h-12 bg-primary text-white rounded-xl flex items-center justify-center hover:bg-blue-600 transition-all shadow-lg shadow-primary/20 shrink-0">
+                            <span class="material-symbols-outlined">send</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="context-panel hidden fixed xl:absolute inset-y-0 right-0 w-full max-w-80px border-l border-border-dark bg-surface-dark flex-col h-full z-40 transition-all duration-300">
+                <div class="p-6 border-b border-border-dark flex items-center justify-between">
+                    <div>
+                        <h3 class="text-base font-bold flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">lightbulb</span>
+                            Ayuda de Contexto
+                        </h3>
+                        <p class="text-[10px] text-slate-500 mt-0.5 uppercase tracking-wide">Lección: Saludos</p>
+                    </div>
+                    <label class="p-1 text-slate-500 hover:text-white cursor-pointer xl:hidden" for="context-toggle">
+                        <span class="material-symbols-outlined">close</span>
+                    </label>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                    <div class="grid gap-3">
+                        <div class="p-4 bg-surface-light-dark rounded-xl border border-border-dark hover:border-primary/30 transition-colors">
+                            <p class="text-xl font-bold text-white mb-0.5">你好</p>
+                            <p class="text-primary text-xs font-semibold">Nǐ hǎo</p>
+                            <p class="text-slate-400 text-xs mt-2 italic">Hola (General)</p>
+                        </div>
+                        <div class="p-4 bg-surface-light-dark rounded-xl border border-border-dark hover:border-primary/30 transition-colors">
+                            <p class="text-xl font-bold text-white mb-0.5">早上好</p>
+                            <p class="text-primary text-xs font-semibold">Zǎoshang hǎo</p>
+                            <p class="text-slate-400 text-xs mt-2 italic">Buenos días</p>
+                        </div>
+                        <div class="p-4 bg-surface-light-dark rounded-xl border border-border-dark hover:border-primary/30 transition-colors">
+                            <p class="text-xl font-bold text-white mb-0.5">下午好</p>
+                            <p class="text-primary text-xs font-semibold">Xiàwǔ hǎo</p>
+                            <p class="text-slate-400 text-xs mt-2 italic">Buenas tardes</p>
+                        </div>
+                        <div class="p-4 bg-surface-light-dark rounded-xl border border-border-dark hover:border-primary/30 transition-colors">
+                            <p class="text-xl font-bold text-white mb-0.5">再见</p>
+                            <p class="text-primary text-xs font-semibold">Zàijiàn</p>
+                            <p class="text-slate-400 text-xs mt-2 italic">Adiós</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-primary/5 rounded-xl border border-primary/20">
+                        <h4 class="text-[10px] font-bold text-primary uppercase tracking-widest mb-2">Recordatorio</h4>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Recuerda los tonos. En "Nǐ hǎo", el primer tono cambia ligeramente para que fluya mejor.
+                        </p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
