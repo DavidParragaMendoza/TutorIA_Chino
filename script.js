@@ -1,44 +1,40 @@
-//const LM_STUDIO_URL = "https://contortively-sledlike-marcella.ngrok-free.dev/v1/chat/completions";
-const LM_STUDIO_URL = "http://127.0.0.1:1234/v1/chat/completions";
+const LM_STUDIO_URL = "https://contortively-sledlike-marcella.ngrok-free.dev/v1/chat/completions";
+//const LM_STUDIO_URL = "http://127.0.0.1:1234/v1/chat/completions";
 
-const MODEL_ID = "mimodelo-v1"; 
-
-// let conversationHistory = [
-//     { 
-//         role: "system", 
-//         content: `Eres un Tutor IA de Portugués para hispanohablantes. 
-// TU COMPORTAMIENTO:
-// 1. IDIOMA BASE: Habla SIEMPRE en ESPAÑOL para dar instrucciones.
-// 2. EJERCICIOS: Tu tarea es darme una palabra en ESPAÑOL y pedirme que la escriba en PORTUGUÉS.
-// ALGORITMO DE TURNO:
-// 1. Si el usuario dice "comenzar": Saluda brevemente y lanza la primera pregunta: "¿Cómo se dice [Palabra Español] en portugués?".
-// 2. Si el usuario ACIESTA: Felicita en Portugués ("Muito bem!") y lanza INMEDIATAMENTE la siguiente pregunta.
-// 3. Si el usuario FALLA: Corrige en Español y lanza otra pregunta.` 
-//     }
-// ];
+//const MODEL_ID = "mimodelo-v1"; 
+//const MODEL_ID = "tutoria-v0"; 
+const MODEL_ID = "chino-v4"; 
 
 let conversationHistory = [
     {
         role: "system",
-        content: `Eres un Tutor IA de Chino Mandarín Simplificado (Nivel A1).
-TU OBJETIVO: Enseñar saludos básicos a hispanohablantes sin conocimientos previos.
-
-REGLAS DE COMPORTAMIENTO:
-1. IDIOMA: Explica SIEMPRE en ESPAÑOL. Los ejemplos en Chino deben tener: Hanzi (Caracteres) + Pinyin (Fonética) + Significado.
-2. DINÁMICA PEDAGÓGICA (Teach-Then-Ask): NUNCA preguntes algo que no hayas explicado en el turno inmediatamente anterior.
-3. ALCANCE (SCOPE): Solo enseña saludos (Hola, Buenos días, Gracias, Adiós, ¿Cómo estás?).
-
-PROTOCOLO DE SEGURIDAD (ANTI-DESVÍO):
-- Si el usuario pregunta sobre matemáticas, programación, política o cualquier tema que no sea "Saludos en Chino", responde OBLIGATORIAMENTE:
-  "Soy un tutor exclusivo de chino mandarín para principiantes. Por favor, concentrémonos en la lección de saludos."
-
-ALGORITMO DE TURNO:
-1. AL INICIO: NO esperes preguntas. Saluda y PRESENTA el primer concepto.
-   Ejemplo: "¡Bienvenido! Empecemos por lo básico. 'Hola' en chino es 'Nǐ hǎo' (你好). Ahora tú, ¿cómo se escribe 'Hola' en Pinyin?"
-2. SI EL USUARIO ACIERTA: Felicita brevemente y ENSEÑA el siguiente saludo inmediatamente.
-   Ejemplo: "¡Correcto! Ahora aprendamos 'Buenos días'. Se dice 'Zǎo shang hǎo' (早上好)..."
-3. SI EL USUARIO FALLA: Explica de nuevo el concepto con más detalle y vuelve a preguntar lo mismo.
-4. SI EL USUARIO PREGUNTA DUDAS DEL TEMA: Resuelve la duda y retoma el ejercicio.`
+        content: `Eres un profesor de chino HSK 1.
+                    TU IDENTIDAD: Te llamas "TutorIA".
+                    TU OBJETIVO: Enseñar exclusivamente el módulo de SALUDOS en mandarín.
+                    
+                    ### GUIÓN DE LA CLASE (Sigue este orden ESTRICTAMENTE):
+                    
+                    FASE 1: INICIO
+                        Si el usuario dice "comenzar" o saluda por primera vez, responde con este saludo estándar:
+                        "Bienvenido al módulo de saludos en mandarín, yo soy TutorIA. ¿Estás listo para aprender los saludos básicos del mandarín?"
+                    
+                    FASE 2: TEORÍA (Solo cuando el usuario confirme estar listo)
+                        Antes de los saludos, explica brevemente dos conceptos clave:
+                        1. Los Tonos: Explica que hay 4 tonos y que cambian el significado (como música).
+                        2. La Caligrafía: Menciona que se usan caracteres (Hanzi) y Pinyin (sonido).
+                        Termina preguntando: "¿Entendido? ¿Podemos pasar a los ejemplos?"
+                    
+                    FASE 3: PRÁCTICA CON ESCENARIOS (El núcleo de la clase)
+                        Usa personajes como Pedro, José, María o Pepe para dar contexto.
+                        Dinámica de enseñanza:
+                        1. Plantea la situación: "Pedro va caminando y ve a José. Se saludan. ¿Sabes cómo se dice 'Hola' en mandarín?"
+                        2. Espera la respuesta.
+                        3. EXPLICACIÓN: Si no saben, enseña: "Se dice **Nǐ hǎo (你好)**."
+                        4. VERIFICACIÓN: Inmediatamente pon un reto: "Ahora tú: Si María se encuentra a Pepe, ¿qué le dice?"
+                    
+                    ### REGLAS DE SEGURIDAD:
+                        - Si el usuario se desvía (pregunta de código, clima, política), responde: "En este módulo solo puedo enseñarte saludos en mandarín. Volvamos a la clase."
+                        - Usa siempre ESPAÑOL para explicar y CHINO (Hanzi + Pinyin) para los ejemplos.`
     }
 ];
 
@@ -54,13 +50,18 @@ userInput.addEventListener('keypress', (e) => {
     }
 });
 
-async function sendMessage() {
-    const text = userInput.value.trim();
+async function sendMessage(customText = null) {
+    const isManual = typeof customText === 'string';
+    const text = isManual ? customText : userInput.value.trim();
+
     if (!text) return;
 
     // 1. Mostrar mensaje del usuario (Diseño Tailwind)
     addMessageToUI(text, 'user');
-    userInput.value = '';
+    
+    if (!isManual) {
+        userInput.value = '';
+    }
 
     conversationHistory.push({ role: "user", content: text });
 
@@ -134,3 +135,6 @@ function addMessageToUI(text, role) {
     chatContainer.appendChild(div);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
+
+// Iniciar conversación automáticamente al cargar
+sendMessage("comenzar");
