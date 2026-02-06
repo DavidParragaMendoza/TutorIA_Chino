@@ -3,7 +3,7 @@ const LM_STUDIO_URL = "https://contortively-sledlike-marcella.ngrok-free.dev/v1/
 
 //const MODEL_ID = "mimodelo-v1"; 
 //const MODEL_ID = "tutoria-v0"; 
-const MODEL_ID = "chino-v5-vertex"; 
+const MODEL_ID = "chino-v4"; 
 
 let conversationHistory = [
     {
