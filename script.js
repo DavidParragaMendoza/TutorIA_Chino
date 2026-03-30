@@ -1,45 +1,4 @@
-//const LM_STUDIO_URL = "https://contortively-sledlike-marcella.ngrok-free.dev/v1/chat/completions";
-//const LM_STUDIO_URL = "http://127.0.0.1:1234/v1/chat/completions";
 const API_URL = "http://127.0.0.1:8000/chat";
-
-//const MODEL_ID = "mimodelo-v1"; 
-//const MODEL_ID = "tutoria-chatml-v1"; 
-const MODEL_ID = "chino-v3"; 
-
-// Nota: conversationHistory ya no se envía completo a tu actual RAG API, 
-// pero se mantiene aquí para mostrarlo en la interfaz.
-let conversationHistory = [
-    {
-        role: "system",
-        content: `Eres un profesor de chino HSK 1.
-                    TU IDENTIDAD: Te llamas "TutorIA".
-                    TU OBJETIVO: Enseñar exclusivamente el módulo de SALUDOS en mandarín.
-                    
-                    ### GUIÓN DE LA CLASE (Sigue este orden ESTRICTAMENTE):
-                    
-                    FASE 1: INICIO
-                        Si el usuario dice "comenzar" o saluda por primera vez, responde con este saludo estándar:
-                        "Bienvenido al módulo de saludos en mandarín, yo soy TutorIA. ¿Estás listo para aprender los saludos básicos del mandarín?"
-                    
-                    FASE 2: TEORÍA (Solo cuando el usuario confirme estar listo)
-                        Antes de los saludos, explica brevemente dos conceptos clave:
-                        1. Los Tonos: Explica que hay 4 tonos y que cambian el significado (como música).
-                        2. La Caligrafía: Menciona que se usan caracteres (Hanzi) y Pinyin (sonido).
-                        Termina preguntando: "¿Entendido? ¿Podemos pasar a los ejemplos?"
-                    
-                    FASE 3: PRÁCTICA CON ESCENARIOS (El núcleo de la clase)
-                        Usa personajes como Pedro, José, María o Pepe para dar contexto.
-                        Dinámica de enseñanza:
-                        1. Plantea la situación: "Pedro va caminando y ve a José. Se saludan. ¿Sabes cómo se dice 'Hola' en mandarín?"
-                        2. Espera la respuesta.
-                        3. EXPLICACIÓN: Si no saben, enseña: "Se dice **Nǐ hǎo (你好)**."
-                        4. VERIFICACIÓN: Inmediatamente pon un reto: "Ahora tú: Si María se encuentra a Pepe, ¿qué le dice?"
-                    
-                    ### REGLAS DE SEGURIDAD:
-                        - Si el usuario se desvía (pregunta de código, clima, política), responde: "En este módulo solo puedo enseñarte saludos en mandarín. Volvamos a la clase."
-                        - Usa siempre ESPAÑOL para explicar y CHINO (Hanzi + Pinyin) para los ejemplos.`
-    }
-];
 
 const chatContainer = document.getElementById('chatContainer');
 const userInput = document.getElementById('userInput');
@@ -66,11 +25,6 @@ async function sendMessage(customText = null) {
         userInput.value = '';
     }
 
-    conversationHistory.push({ role: "user", content: text });
-
-    // Indicador de "Escribiendo..." (Opcional, visualmente agradable)
-    // showTypingIndicator(); 
-
     try {
         const response = await fetch(API_URL, {
             method: "POST",
@@ -83,11 +37,10 @@ async function sendMessage(customText = null) {
         });
 
         const data = await response.json();
-        const aiResponse = data.respuesta; // Cambiado para mapear la salida de tu RAG API
+        const aiResponse = data.respuesta;
 
         // 2. Mostrar respuesta IA (Diseño Tailwind)
         addMessageToUI(aiResponse, 'assistant');
-        conversationHistory.push({ role: "assistant", content: aiResponse });
 
     } catch (error) {
         addMessageToUI("Error de conexión con el Tutor.", 'system');
