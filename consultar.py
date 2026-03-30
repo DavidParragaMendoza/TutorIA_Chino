@@ -4,6 +4,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
+from faiss_runtime import activar_gpu_si_disponible
 
 # --- CONFIGURACIÓN ---
 FAISS_PATH = "./faiss_db"
@@ -50,6 +51,7 @@ def main():
         embeddings=embedding_function,
         allow_dangerous_deserialization=True
     )
+    db = activar_gpu_si_disponible(db)
     print(f"-> Base de datos cargada desde '{FAISS_PATH}'")
 
     # ===========================================================

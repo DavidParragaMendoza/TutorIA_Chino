@@ -1,3 +1,7 @@
+import os
+import socket
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -6,17 +10,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
-
-app = FastAPI(title="Tutor Mandarín RAG API")
-
-# Habilitar CORS para que tu frontend (HTML/JS) pueda hacer peticiones sin bloqueos
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"], # En producción, cambia "*" por la URL de tu frontend
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+from faiss_runtime import activar_gpu_si_disponible
 
 class ChatRequest(BaseModel):
     pregunta: str
@@ -27,7 +21,7 @@ class ChatResponse(BaseModel):
 # --- CONFIGURACIÓN ---
 FAISS_PATH = "./faiss_db"
 MODELO_EMBEDDINGS = "nomic-embed-text"
-MODELO_LLM = "qwen2.5:3b"
+MODELO_LLM = "TUTOR-CHINO"
 NUM_FRAGMENTOS = 5
 
 # Variable global para mantener la cadena RAG cargada en memoria
@@ -74,8 +68,7 @@ RESPUESTA:"""
 def formatear_documentos(docs):
     return "\n\n---\n\n".join(doc.page_content for doc in docs)
 
-@app.on_event("startup")
-def startup_event():
+def inicializar_rag():
     global cadena_rag
     print("--- Inicializando la base de datos y la cadena RAG ---")
     try:
@@ -87,6 +80,7 @@ def startup_event():
             embeddings=embedding_function,
             allow_dangerous_deserialization=True
         )
+        db = activar_gpu_si_disponible(db)
         
         retriever = db.as_retriever(
             search_type="similarity",
@@ -109,6 +103,36 @@ def startup_event():
     except Exception as e:
         print(f"Error al inicializar RAG: {e}")
 
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    inicializar_rag()
+    yield
+
+
+app = FastAPI(title="Tutor Mandarín RAG API", lifespan=lifespan)
+
+# Habilitar CORS para que tu frontend (HTML/JS) pueda hacer peticiones sin bloqueos
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # En producción, cambia "*" por la URL de tu frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+def obtener_puerto_disponible(preferido: int, intentos: int = 20) -> int:
+    for puerto in range(preferido, preferido + intentos + 1):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            try:
+                sock.bind(("0.0.0.0", puerto))
+                return puerto
+            except OSError:
+                continue
+    return preferido
+
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
     if not cadena_rag:
@@ -123,5 +147,11 @@ async def chat_endpoint(request: ChatRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    # Corre el servidor en el puerto 8000
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    host = os.getenv("HOST", "0.0.0.0")
+    puerto_preferido = int(os.getenv("PORT", "8000"))
+    puerto = obtener_puerto_disponible(puerto_preferido)
+
+    if puerto != puerto_preferido:
+        print(f"-> Puerto {puerto_preferido} ocupado. Iniciando en {puerto}.")
+
+    uvicorn.run(app, host=host, port=puerto)

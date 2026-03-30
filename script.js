@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000/chat";
+const API_URL = " http://127.0.0.1:4040";
 
 const chatContainer = document.getElementById('chatContainer');
 const userInput = document.getElementById('userInput');

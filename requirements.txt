@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+pydantic
+langchain-community
+langchain-core
+langchain-ollama
+langchain-text-splitters
+pypdf
+
+# Windows/macOS: FAISS CPU
+faiss-cpu; platform_system == "Windows"
+faiss-cpu; platform_system == "Darwin"
+
+# Linux: intenta GPU, y usa CPU si no aplica para tu CUDA/Python
+faiss-gpu; platform_system == "Linux" and python_version < "3.13"
+faiss-cpu; platform_system == "Linux" and python_version >= "3.13"
