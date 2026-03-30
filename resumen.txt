@@ -1,0 +1,106 @@
+=====================================================================
+ RESUMEN - Fase 3: Lógica de Recuperación y Generación (RAG)
+ Fecha: 26 de febrero de 2026
+=====================================================================
+
+OBJETIVO
+--------
+Implementar el script "consultar.py" que actúa como el cerebro del
+sistema RAG (Retrieval-Augmented Generation). Este script permite al
+estudiante hacer preguntas sobre chino mandarín y recibir respuestas
+basadas exclusivamente en el contenido del PDF procesado en la Fase 2.
+
+Modelo LLM utilizado: qwen2.5:3b (instalado en Ollama)
+Modelo de embeddings: nomic-embed-text (el mismo de construir_bd.py)
+
+=====================================================================
+ARCHIVOS INVOLUCRADOS
+=====================================================================
+
+1. construir_bd.py  (YA EXISTÍA - Fase 2)
+   - Carga el PDF "Leccion1.pdf"
+   - Limpia y fragmenta el texto en chunks
+   - Vectoriza los chunks con nomic-embed-text
+   - Guarda la base de datos vectorial en ./faiss_db/
+
+2. consultar.py     (NUEVO - Fase 3)
+   - Carga la base de datos vectorial de ./faiss_db/
+   - Recibe preguntas del estudiante en un bucle interactivo
+   - Ejecuta los 3 bloques (A, B, C) y devuelve la respuesta
+
+3. faiss_db/        (GENERADO por construir_bd.py)
+   - index.faiss    -> Archivo binario con los vectores indexados
+   - index.pkl      -> Metadatos de los documentos asociados
+
+=====================================================================
+LOS 3 BLOQUES IMPLEMENTADOS EN consultar.py
+=====================================================================
+
+BLOQUE A - Vectorización de la Consulta (Query Embedding)
+----------------------------------------------------------
+Ubicación: consultar.py, dentro de main(), sección "BLOQUE A"
+Qué hace:
+  - Carga el modelo de embeddings "nomic-embed-text" (el MISMO que
+    se usó en construir_bd.py para vectorizar el PDF).
+  - Carga la base de datos FAISS desde disco (./faiss_db/).
+  - Cuando el usuario escribe una pregunta, esta se convierte en un
+    vector numérico automáticamente al pasar por el retriever.
+Por qué importa:
+  - La pregunta debe estar en el mismo espacio matemático que los
+    fragmentos del PDF para que la comparación tenga sentido.
+
+BLOQUE B - Búsqueda Semántica (Retrieval)
+----------------------------------------------------------
+Ubicación: consultar.py, dentro de main(), sección "BLOQUE B"
+Qué hace:
+  - Convierte la base de datos FAISS en un "retriever".
+  - El retriever compara el vector de la pregunta contra todos los
+    vectores almacenados y devuelve los 5 fragmentos más cercanos
+    (los "vecinos más cercanos" por similitud coseno).
+Configuración:
+  - search_type = "similarity"
+  - k = 5 (número de fragmentos recuperados)
+
+BLOQUE C - Construcción del Prompt Aumentado (Augmentation)
+----------------------------------------------------------
+Ubicación: consultar.py, dentro de main(), sección "BLOQUE C"
+Qué hace:
+  - Toma los 5 fragmentos recuperados del Bloque B y los une en un
+    bloque de texto (la función formatear_documentos).
+  - Inyecta ese contexto y la pregunta del usuario en una plantilla
+    de prompt (TEMPLATE) que le dice a Qwen:
+      "Eres un profesor. Usa SOLO esta información. Responde esto."
+  - Envía el prompt completo al modelo qwen2.5:3b vía Ollama.
+  - Devuelve la respuesta como texto plano al estudiante.
+Configuración del LLM:
+  - Modelo: qwen2.5:3b
+  - Temperatura: 0.3 (baja, para respuestas precisas y consistentes)
+
+=====================================================================
+CÓMO EJECUTAR
+=====================================================================
+
+Paso 1 (solo si no se ha hecho): Construir la base de datos
+  python construir_bd.py
+
+Paso 2: Consultar al tutor
+  python consultar.py
+
+  Luego escribir preguntas como:
+    "¿Qué es el Pinyin?"
+    "¿Cómo se dice hola en chino?"
+  
+  Escribir "salir" para terminar.
+
+=====================================================================
+DEPENDENCIAS (ya instaladas en el entorno virtual .venv)
+=====================================================================
+- langchain-ollama
+- langchain-community
+- langchain-core
+- langchain-text-splitters
+- faiss-cpu
+- pypdf
+
+Servicios requeridos corriendo:
+- Ollama con los modelos: nomic-embed-text y qwen2.5:3b

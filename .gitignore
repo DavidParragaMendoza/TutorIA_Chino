@@ -3,3 +3,14 @@ node_modules
 .DS_Store
 dist
 build
+
+# Python
+.venv/
+env/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Base de datos vectorial (muy pesada y se genera localmente)
+faiss_db/

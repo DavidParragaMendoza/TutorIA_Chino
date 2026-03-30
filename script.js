@@ -1,21 +1,21 @@
-const LM_STUDIO_URL = "https://contortively-sledlike-marcella.ngrok-free.dev/v1/chat/completions";
+//const LM_STUDIO_URL = "https://contortively-sledlike-marcella.ngrok-free.dev/v1/chat/completions";
 //const LM_STUDIO_URL = "http://127.0.0.1:1234/v1/chat/completions";
+const API_URL = "http://127.0.0.1:8000/chat";
 
 //const MODEL_ID = "mimodelo-v1"; 
-//const MODEL_ID = "tutoria-v0"; 
-const MODEL_ID = "chino-v4"; 
+//const MODEL_ID = "tutoria-chatml-v1"; 
+const MODEL_ID = "chino-v3"; 
 
+// Nota: conversationHistory ya no se envía completo a tu actual RAG API, 
+// pero se mantiene aquí para mostrarlo en la interfaz.
 let conversationHistory = [
     {
         role: "system",
-        content: `Eres un profesor de chino HSK 1.
-                    TU IDENTIDAD: Te llamas "TutorIA".
+        content: `Eres un profesor de chino mandarín llamado TutorIA.
                     TU OBJETIVO: Enseñar exclusivamente el módulo de SALUDOS en mandarín.
-                    
                     ### GUIÓN DE LA CLASE (Sigue este orden ESTRICTAMENTE):
-                    
                     FASE 1: INICIO
-                        Si el usuario dice "comenzar" o saluda por primera vez, responde con este saludo estándar:
+                        Si el usuario dice "comenzar", responde con este saludo estándar:
                         "Bienvenido al módulo de saludos en mandarín, yo soy TutorIA. ¿Estás listo para aprender los saludos básicos del mandarín?"
                     
                     FASE 2: TEORÍA (Solo cuando el usuario confirme estar listo)
@@ -69,21 +69,18 @@ async function sendMessage(customText = null) {
     // showTypingIndicator(); 
 
     try {
-        const response = await fetch(LM_STUDIO_URL, {
+        const response = await fetch(API_URL, {
             method: "POST",
             headers: { 
-                "Content-Type": "application/json",
-                "ngrok-skip-browser-warning": "true"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: MODEL_ID,
-                messages: conversationHistory,
-                temperature: 0.7
+                pregunta: text
             })
         });
 
         const data = await response.json();
-        const aiResponse = data.choices[0].message.content;
+        const aiResponse = data.respuesta; // Cambiado para mapear la salida de tu RAG API
 
         // 2. Mostrar respuesta IA (Diseño Tailwind)
         addMessageToUI(aiResponse, 'assistant');
