@@ -21,7 +21,7 @@ class ChatResponse(BaseModel):
 # --- CONFIGURACIÓN ---
 FAISS_PATH = "./faiss_db"
 MODELO_EMBEDDINGS = "nomic-embed-text"
-MODELO_LLM = "TUTOR-CHINO"
+MODELO_LLM = "qwen2.5:3b"
 NUM_FRAGMENTOS = 5
 
 # Variable global para mantener la cadena RAG cargada en memoria

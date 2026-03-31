@@ -1,4 +1,4 @@
-const API_URL = " http://127.0.0.1:4040";
+const API_URL = "https://radiable-subturriculate-aryanna.ngrok-free.dev/chat";
 
 const chatContainer = document.getElementById('chatContainer');
 const userInput = document.getElementById('userInput');
