@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/frontend/pages/index.html"
+    },
+    {
+      "source": "/static/:path*",
+      "destination": "/frontend/static/:path*"
+    }
+  ]
+}
