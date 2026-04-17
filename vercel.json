@@ -14,20 +14,20 @@
       "destination": "/frontend/pages/temas/index.html"
     },
     {
-      "source": "/temas/saludos",
-      "destination": "/frontend/pages/temas/saludos/index.html"
+      "source": "/temas/:tema/chat",
+      "destination": "/frontend/pages/temas/:tema/chat.html"
     },
     {
-      "source": "/temas/saludos/",
-      "destination": "/frontend/pages/temas/saludos/index.html"
+      "source": "/temas/:tema/chat/",
+      "destination": "/frontend/pages/temas/:tema/chat.html"
     },
     {
-      "source": "/temas/saludos/chat",
-      "destination": "/frontend/pages/temas/saludos/chat.html"
+      "source": "/temas/:tema",
+      "destination": "/frontend/pages/temas/:tema/index.html"
     },
     {
-      "source": "/temas/saludos/chat/",
-      "destination": "/frontend/pages/temas/saludos/chat.html"
+      "source": "/temas/:tema/",
+      "destination": "/frontend/pages/temas/:tema/index.html"
     },
     {
       "source": "/static/:path*",

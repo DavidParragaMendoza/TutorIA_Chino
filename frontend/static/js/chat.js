@@ -4,7 +4,7 @@ if (API_URL_PARAM) {
     localStorage.setItem("tutorchinoApiUrl", API_URL_PARAM);
 }
 
-const API_URL = window.APP_CONFIG?.apiUrl || API_URL_PARAM || localStorage.getItem("tutorchinoApiUrl") || "/chat";
+const API_URL = API_URL_PARAM || localStorage.getItem("tutorchinoApiUrl") || window.APP_CONFIG?.apiUrl || "/chat";
 const PROMPT_INICIAL = `Inicia la clase de saludos de chino mandarín HSK 1. Saluda breve y pregunta qué quiere practicar primero (saludos básicos, formales o despedidas).`;
 
 const chatContainer = document.getElementById("chatContainer");

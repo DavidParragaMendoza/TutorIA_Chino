@@ -53,20 +53,21 @@ La app sirve:
 - API: `POST /chat`
 - Estáticos: `/static/...`
 
-## Frontend en Vercel + API en ngrok
+## Frontend en Vercel + API en ngrok (usando tu hardware local)
 
-Si publicas solo el frontend en Vercel y quieres usar tu laptop como backend:
+Este proyecto puede desplegarse en Vercel como sitio estático y consumir el backend que corre en tu laptop.
 
-1. Levanta tu backend local (`python main.py`) y expón el puerto con ngrok.
-2. Abre una vez `frontend/pages/temas/saludos/chat.html` con `?apiUrl=https://tu-subdominio.ngrok-free.app/chat`.
-3. El valor quedará guardado en el navegador y el chat volverá a usar esa URL en siguientes visitas.
-4. Si prefieres dejarlo fijo, puedes cambiar `window.APP_CONFIG.apiUrl` en `frontend/pages/temas/saludos/chat.html`.
-
-Ejemplo:
-
-```html
-apiUrl: "https://xxxx-xx-xx-xx-xx.ngrok-free.app/chat"
-```
+1. Inicia el backend en tu PC:
+   ```powershell
+   python main.py
+   ```
+2. En otra terminal, expón el backend con ngrok:
+   ```powershell
+   ngrok http 8000
+   ```
+3. Toma la URL pública HTTPS de ngrok y abre tu chat en Vercel una vez con:
+   `https://tu-frontend.vercel.app/temas/saludos/chat?apiUrl=https://tu-subdominio.ngrok-free.app/chat`
+4. Esa URL de API se guarda en `localStorage` y el chat seguirá usando tu backend local en próximas visitas.
 
 ## Scripts útiles
 
