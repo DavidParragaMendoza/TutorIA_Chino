@@ -6,6 +6,30 @@
       "destination": "/frontend/pages/index.html"
     },
     {
+      "source": "/temas",
+      "destination": "/frontend/pages/temas/index.html"
+    },
+    {
+      "source": "/temas/",
+      "destination": "/frontend/pages/temas/index.html"
+    },
+    {
+      "source": "/temas/saludos",
+      "destination": "/frontend/pages/temas/saludos/index.html"
+    },
+    {
+      "source": "/temas/saludos/",
+      "destination": "/frontend/pages/temas/saludos/index.html"
+    },
+    {
+      "source": "/temas/saludos/chat",
+      "destination": "/frontend/pages/temas/saludos/chat.html"
+    },
+    {
+      "source": "/temas/saludos/chat/",
+      "destination": "/frontend/pages/temas/saludos/chat.html"
+    },
+    {
       "source": "/static/:path*",
       "destination": "/frontend/static/:path*"
     }

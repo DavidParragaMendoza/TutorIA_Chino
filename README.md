@@ -58,8 +58,9 @@ La app sirve:
 Si publicas solo el frontend en Vercel y quieres usar tu laptop como backend:
 
 1. Levanta tu backend local (`python main.py`) y expón el puerto con ngrok.
-2. Edita `frontend/pages/temas/saludos/chat.html`.
-3. En `window.APP_CONFIG.apiUrl`, coloca tu URL pública de ngrok terminando en `/chat`.
+2. Abre una vez `frontend/pages/temas/saludos/chat.html` con `?apiUrl=https://tu-subdominio.ngrok-free.app/chat`.
+3. El valor quedará guardado en el navegador y el chat volverá a usar esa URL en siguientes visitas.
+4. Si prefieres dejarlo fijo, puedes cambiar `window.APP_CONFIG.apiUrl` en `frontend/pages/temas/saludos/chat.html`.
 
 Ejemplo:
 
