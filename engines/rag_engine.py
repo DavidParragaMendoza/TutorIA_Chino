@@ -1,3 +1,4 @@
+import re
 from operator import itemgetter
 
 from langchain_community.vectorstores import FAISS
@@ -21,9 +22,11 @@ REGLAS DE INTERACCIÓN:
 2. CONTINUIDAD OBLIGATORIA: Si hay historial, NO repitas bienvenida ni reinicies la clase; responde según la última intervención del estudiante.
 3. SIN MENÚS NI OPCIONES: No ofrezcas categorías (básicos/formales/despedidas), no listes A/B/C y no vuelvas a preguntar "qué quieres practicar" después del inicio.
 4. MÉTODO SOCRÁTICO: No des la teoría directamente. Haz una sola pregunta guiada por turno y avanza gradualmente con vocabulario inicial HSK 1.
-5. RETROALIMENTACIÓN: Cuando el alumno responda, corrige o felicita, explica brevemente el porqué usando el contexto y continúa con el siguiente paso, sin reiniciar.
-6. FORMATO E IDIOMA: Explica siempre en español. Usa Hanzi + Pinyin solo para ejemplos de palabras o frases cortas, no para párrafos completos.
-7. ALCANCE: Mantente en saludos de nivel inicial HSK 1. Si preguntan fuera del tema, redirige amablemente a la práctica de saludos.
+5. EVALUACIÓN ESTRICTA DE PRONUNCIACIÓN/PINYIN: Nunca felicites una respuesta si faltan tonos o hay errores ortográficos/fonéticos. Si el alumno escribe "ni hao" o algo incorrecto como "hai mi", corrige con tacto y muestra la forma correcta: "Nǐ hǎo (你好)".
+6. RETROALIMENTACIÓN: Cuando el alumno responda, primero valida/corrige, luego explica brevemente el porqué usando el contexto y continúa con el siguiente paso, sin reiniciar.
+7. FORMATO E IDIOMA: Explica siempre en español. Usa Hanzi + Pinyin solo para ejemplos de palabras o frases cortas, no para párrafos completos en chino.
+8. SALIDA LIMPIA: Responde como una sola intervención del tutor. No generes guiones de diálogo ni prefijos como "Tutor:" o "Estudiante:".
+9. ALCANCE: Mantente en saludos de nivel inicial HSK 1. Si preguntan fuera del tema, redirige amablemente a la práctica de saludos.
 
 HISTORIAL PREVIO:
 {historial}
@@ -40,6 +43,19 @@ RESPUESTA:
 
 def _formatear_documentos(docs):
     return "\n\n---\n\n".join(doc.page_content for doc in docs)
+
+
+def _limpiar_respuesta_tutor(respuesta: str) -> str:
+    texto = respuesta.strip()
+
+    if "Tutor:" in texto:
+        texto = texto.split("Tutor:", 1)[1].strip()
+
+    if "\nEstudiante:" in texto:
+        texto = texto.split("\nEstudiante:", 1)[0].strip()
+
+    texto = re.sub(r"^\s*(Tutor|Estudiante|Asistente)\s*:\s*", "", texto, flags=re.IGNORECASE)
+    return texto.strip()
 
 
 class MotorRAG(MotorInferencia):
@@ -77,4 +93,5 @@ class MotorRAG(MotorInferencia):
         return cadena
 
     def generar_respuesta(self, pregunta: str, historial: str = "") -> str:
-        return self._cadena_rag.invoke({"pregunta": pregunta, "historial": historial})
+        respuesta = self._cadena_rag.invoke({"pregunta": pregunta, "historial": historial})
+        return _limpiar_respuesta_tutor(respuesta)
