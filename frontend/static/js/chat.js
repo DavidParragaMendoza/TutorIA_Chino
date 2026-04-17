@@ -5,7 +5,7 @@ if (API_URL_PARAM) {
 }
 
 const API_URL = API_URL_PARAM || localStorage.getItem("tutorchinoApiUrl") || window.APP_CONFIG?.apiUrl || "/chat";
-const PROMPT_INICIAL = `Inicia la clase de saludos de chino mandarín HSK 1. Saluda breve y pregunta qué quiere practicar primero (saludos básicos, formales o despedidas).`;
+const PROMPT_INICIAL = `Inicia la clase de saludos de chino mandarín HSK 1. Da un saludo cordial de bienvenida y pregunta qué quiere practicar primero (saludos básicos, formales o despedidas). En este primer mensaje no uses opciones A/B/C.`;
 
 const chatContainer = document.getElementById("chatContainer");
 const userInput = document.getElementById("userInput");
@@ -47,13 +47,18 @@ async function solicitarRespuestaTutor(pregunta, historial) {
 
 async function iniciarSesionTutor() {
     try {
-        const respuestaInicial = await solicitarRespuestaTutor(PROMPT_INICIAL, []);
+        const respuestaInicialRaw = await solicitarRespuestaTutor(PROMPT_INICIAL, []);
+        const respuestaInicial = normalizarRespuestaInicial(respuestaInicialRaw);
         historialConversacion.push({ rol: "asistente", contenido: respuestaInicial });
         addMessageToUI(respuestaInicial, "assistant");
     } catch (error) {
         addMessageToUI("Error de conexión con el Tutor.", "system");
         console.error(error);
     }
+}
+
+function normalizarRespuestaInicial(texto) {
+    return texto.replace(/^\s*[ABC]\s*(?:\r?\n)+/i, "").trim();
 }
 
 async function sendMessage() {
