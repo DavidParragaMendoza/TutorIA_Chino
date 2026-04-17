@@ -5,7 +5,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_ollama import OllamaEmbeddings
 from langchain_community.vectorstores import FAISS
-from faiss_runtime import preparar_indice_para_guardar
+from core.faiss_runtime import preparar_indice_para_guardar
 
 # --- CONFIGURACIÓN ---
 PDF_PATH = "Leccion1.pdf"

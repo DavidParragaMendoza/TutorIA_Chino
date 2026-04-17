@@ -1,10 +1,9 @@
-import sys
 from langchain_ollama import OllamaEmbeddings, ChatOllama
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
-from faiss_runtime import activar_gpu_si_disponible
+from core.faiss_runtime import activar_gpu_si_disponible
 
 # --- CONFIGURACIÓN ---
 FAISS_PATH = "./faiss_db"

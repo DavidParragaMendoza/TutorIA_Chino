@@ -1,4 +1,4 @@
-# Instalación de FAISS para este proyecto
+# Instalación de FAISS para este proyecto (documentación)
 
 ## 1) Windows (PowerShell)
 

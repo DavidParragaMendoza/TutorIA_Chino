@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "build": "npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css",
-    "watch": "npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch"
+    "build": "npx @tailwindcss/cli -i ./frontend/src/input.css -o ./frontend/static/css/output.css",
+    "watch": "npx @tailwindcss/cli -i ./frontend/src/input.css -o ./frontend/static/css/output.css --watch"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.18",

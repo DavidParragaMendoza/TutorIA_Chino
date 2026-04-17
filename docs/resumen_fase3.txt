@@ -81,10 +81,10 @@ CÓMO EJECUTAR
 =====================================================================
 
 Paso 1 (solo si no se ha hecho): Construir la base de datos
-  python construir_bd.py
+  python -m scripts.construir_bd
 
 Paso 2: Consultar al tutor
-  python consultar.py
+  python -m scripts.consultar
 
   Luego escribir preguntas como:
     "¿Qué es el Pinyin?"
